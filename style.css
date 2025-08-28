@@ -222,3 +222,6 @@ button:disabled {
 button:disabled:hover {
   transform: none !important;
 }
+#manaBar {
+  background: #4a90e2 !important;
+}

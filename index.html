@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Tibia Clicker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- TOPO / IDENTIDADE / SAVE -->
+    <header class="topbar">
+      <div class="brand">
+        <h1>Tibia Clicker</h1>
+        <span class="tagline">Medieval • Pixel • Clicker RPG</span>
+      </div>
+      <div class="savebox">
+        <label>Nome do personagem
+          <input id="playerNameInput" type="text" maxlength="20" placeholder="Seu nome..." />
+        </label>
+        <label class="checkbox">
+          <input id="localSaveToggle" type="checkbox" checked />
+          <span>Salvar localmente</span>
+        </label>
+        <label class="checkbox">
+          <input id="offlineToggle" type="checkbox" checked />
+          <span>Geração offline</span>
+        </label>
+        <button id="btnSave">Salvar agora</button>
+        <button id="btnReset" class="danger">Resetar progresso</button>
+      </div>
+    </header>
+
+    <!-- HUD PRINCIPAL -->
+   <main class="layout">
+  <section class="hud card">
+    <h2>Status</h2>
+    <div class="row">
+      <div class="stat">
+        <div>Nível</div>
+        <div id="uiLevel" class="value">1</div>
+      </div>
+
+      <div class="stat">
+        <div>XP</div>
+        <div class="value">
+          <span id="uiXp">0</span>/<span id="uiXpToNext">100</span>
+        </div>
+        <div class="bar">
+          <div id="xpBar" class="barfill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="stat">
+        <div>Gold</div>
+        <div id="uiGold" class="value">0</div>
+      </div>
+
+      <div class="stat">
+        <div>Mana</div>
+        <div class="value">
+          <span id="uiCurrentMana">10</span>/<span id="uiMaxMana">10</span>
+        </div>
+        <div class="bar">
+          <div id="manaBar" class="barfill" style="width:100%; background:#4a90e2;"></div>
+        </div>
+      </div>
+    </div>
+ 
+        <h3>Atributos</h3>
+<div class="grid-2">
+  <div class="attr">
+    <span class="attr-info">
+      Força: <span id="uiStr">1</span>
+      <button class="info-button">ℹ</button>
+      <div class="tooltip">
+        <strong>Força</strong><br>
+        Aumenta o dano base em +1.5 por ponto.<br>
+        Dano atual da força: +<span id="strDamageValue">1.5</span>
+      </div>
+    </span>
+  </div>
+  <div class="attr">
+    <span class="attr-info">
+      Agilidade: <span id="uiAgi">1</span>
+      <button class="info-button">ℹ</button>
+      <div class="tooltip">
+        <strong>Agilidade</strong><br>
+        Aumenta chance de crítico em +0.2% por ponto.<br>
+        Bônus atual: +<span id="agiCritValue">0.2</span>%
+      </div>
+    </span>
+  </div>
+  <div class="attr">
+    <span class="attr-info">
+      Defesa: <span id="uiDef">1</span>
+      <button class="info-button">ℹ</button>
+      <div class="tooltip">
+        <strong>Defesa</strong><br>
+        Reduz dano recebido de bosses em 0.6 por ponto.<br>
+        Redução atual: -<span id="defReductionValue">0.6</span> dano
+      </div>
+    </span>
+  </div>
+  <div class="attr">
+    <span class="attr-info">
+      Mana: <span id="uiMana">0</span>
+      <button class="info-button">ℹ</button>
+      <div class="tooltip">
+        <strong>Mana</strong><br>
+        Aumenta dano mágico e pode ser necessária<br>
+        para habilidades especiais futuras.
+      </div>
+    </span>
+  </div>
+  <div class="attr">
+    <span class="attr-info">
+      Crítico (%): <span id="uiCrit">5</span>
+      <button class="info-button">ℹ</button>
+      <div class="tooltip">
+        <strong>Chance de Crítico</strong><br>
+        Base: 5% + Agilidade × 0.2% + Equipamentos<br>
+        Máximo: 100%
+      </div>
+    </span>
+  </div>
+  <div class="attr">
+    <span class="attr-info">
+      Dano Crítico (x): <span id="uiCritDmg">1.5</span>
+      <button class="info-button">ℹ</button>
+      <div class="tooltip">
+        <strong>Multiplicador de Crítico</strong><br>
+        Aumenta em +0.05x por ponto investido.<br>
+        Críticos causam <span id="critMultValue">1.5</span>x o dano normal.
+      </div>
+    </span>
+  </div>
+  <div class="attr">
+    <span class="attr-info">
+      Vida Máx.: <span id="uiMaxHp">100</span>
+      <button class="info-button">ℹ</button>
+      <div class="tooltip">
+        <strong>Vida Máxima</strong><br>
+        Base: 100 + (Nível-1) × 10<br>
+        + Upgrades da loja + Equipamentos
+      </div>
+    </span>
+  </div>
+  <div class="attr">Pontos livres: <span id="uiAttrPts">0</span></div>
+</div>
+
+        <div class="attr-buttons">
+          <button class="mini" data-attr="str">+ Força</button>
+          <button class="mini" data-attr="agi">+ Agilidade</button>
+          <button class="mini" data-attr="def">+ Defesa</button>
+          <button class="mini" data-attr="mana">+ Mana</button>
+          <button class="mini" data-attr="crit">+ Crítico</button>
+          <button class="mini" data-attr="critdmg">+ Dano Crítico</button>
+        </div>
+
+        <h3>Skills</h3>
+        <div class="grid-2">
+          <div class="attr">Sword: <span id="uiSword">1</span></div>
+          <div class="attr">Archery: <span id="uiArchery">1</span></div>
+          <div class="attr">Magia: <span id="uiMagic">1</span></div>
+          <div class="attr">Shielding: <span id="uiShield">1</span></div>
+        </div>
+
+        <h3>Mapa</h3>
+        <div class="mapline">
+          <span id="uiMapName">Floresta</span> • Inimigos mortos neste mapa:
+          <span id="uiKills">0</span> / <span id="uiKillsGoal">10</span>
+        </div>
+
+        <div class="actions">
+          <button id="btnHunt" class="primary">Atacar inimigo comum</button>
+          <button id="btnBoss" class="warning">Lutar contra Boss</button>
+          <button id="btnShop">Abrir Loja</button>
+          <button id="btnInventory">Abrir Inventário</button>
+          <button id="btnQuests">Quests</button>
+        </div>
+
+        <div class="common-enemy card subtle">
+          <div class="row">
+            <div>Inimigo comum</div>
+            <div>HP: <span id="uiMobHp">20</span>/<span id="uiMobMaxHp">20</span></div>
+          </div>
+          <div class="bar small"><div id="mobBar" class="barfill" style="width:100%"></div></div>
+        </div>
+
+        <div class="note">
+          Inimigos comuns não revidam. Clique “Atacar inimigo comum” para causar dano (autohit se disponível).
+        </div>
+      </section>
+
+      <!-- LOG / CHAT -->
+      <aside class="log card">
+        <h2>Log do Jogo</h2>
+        <div id="logBox" class="logbox"></div>
+      </aside>
+    </main>
+
+    <!-- JANELAS / MODAIS -->
+    <div id="modalOverlay" class="overlay hidden"></div>
+
+    <!-- INVENTÁRIO -->
+    <div id="inventoryModal" class="modal hidden">
+      <div class="modal-header">
+        <h3>Inventário</h3>
+        <button class="close" data-close="inventoryModal">×</button>
+      </div>
+      <div class="modal-body inv-grid">
+        <div class="inv-section">
+          <h4>Equipado</h4>
+          <div class="equip-grid">
+            <div>Arma: <span id="eqWeapon">Nenhuma</span></div>
+            <div>Armadura: <span id="eqArmor">Nenhuma</span></div>
+            <div>Anel: <span id="eqRing">Nenhum</span></div>
+          </div>
+        </div>
+        <div class="inv-section">
+          <h4>Itens</h4>
+          <div id="inventoryList" class="items"></div>
+        </div>
+        <div class="inv-section">
+          <h4>Consumíveis</h4>
+          <div id="consumablesList" class="items"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOJA -->
+<div id="shopModal" class="modal hidden">
+  <div class="modal-header">
+    <h3>Loja</h3>
+    <div class="gold-display">Gold: <span id="shopGoldDisplay">0</span></div>
+    <button class="close" data-close="shopModal">×</button>
+  </div>
+  <div class="modal-body shop-grid">
+    <div class="shop-section">
+      <h4>Upgrades Permanentes</h4>
+      <div id="shopUpgrades" class="shop-list"></div>
+    </div>
+    <div class="shop-section">
+      <h4>Equipamentos</h4>
+      <div id="shopGear" class="shop-list"></div>
+    </div>
+    <div class="shop-section">
+      <h4>Consumíveis</h4>
+      <div id="shopConsumables" class="shop-list"></div>
+    </div>
+  </div>
+</div>
+
+    <!-- QUESTS -->
+    <div id="questsModal" class="modal hidden">
+      <div class="modal-header">
+        <h3>Quests</h3>
+        <button class="close" data-close="questsModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div id="questsList"></div>
+      </div>
+    </div>
+
+<div class="shop-section">
+  <h4>Magias</h4>
+  <div id="shopSpells" class="shop-list"></div>
+</div>
+
+    <!-- BOSS BATTLE -->
+    <div id="bossModal" class="modal hidden boss">
+      <div class="modal-header">
+        <h3>Boss Battle</h3>
+        <button class="close" data-close="bossModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="boss-grid">
+          <div class="boss-col">
+            <div class="boss-line">Player HP:
+              <span id="uiPlayerHp">100</span>/<span id="uiPlayerMaxHp">100</span>
+            </div>
+            <div class="bar"><div id="playerHpBar" class="barfill"></div></div>
+            <div class="boss-line">Boss HP:
+              <span id="uiBossHp">200</span>/<span id="uiBossMaxHp">200</span>
+            </div>
+            <div class="bar"><div id="bossHpBar" class="barfill"></div></div>
+            <div class="boss-line">Próximo ataque do Boss</div>
+            <div class="bar small"><div id="bossAtkTimer" class="barfill"></div></div>
+          </div>
+          <div class="boss-actions">
+            <button id="btnAttackBoss" class="primary large">Atacar</button>
+            <button id="btnUsePotion" class="secondary">Usar Poção (se houver)</button>
+            <div class="note">Bosses revidam automaticamente. Se morrer, perde 5% do gold e 5% de toda XP.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script defer src="game.js"></script>
+</body>
+</html>
